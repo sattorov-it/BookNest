@@ -37,13 +37,17 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
     public async Task<ApiResponse<Author>> GetAuthorAsync(int id)
     {
         var res = await repository.GetAuthorAsync(id);
-        return new ApiResponse<Author>(HttpStatusCode.OK, "Author with given id.", res);
+        return res != null
+        ? new ApiResponse<Author>(HttpStatusCode.OK, "Author with given id.", res)
+        : new ApiResponse<Author>(HttpStatusCode.NotFound, "No author with given id.", res!);
     }
 
     public async Task<ApiResponse<List<Author>>> GetAuthorsAsync()
     {
         var res = await repository.GetAuthorsAsync();
-        return new ApiResponse<List<Author>>(HttpStatusCode.OK, "List of authors.", res);
+        return res != null
+        ? new ApiResponse<List<Author>>(HttpStatusCode.OK, "List of author.", res)
+        : new ApiResponse<List<Author>>(HttpStatusCode.NotFound, "No list of author.", res!);
     }
 
     public async Task<ApiResponse<int>> GetAuthorsAmountAsync()

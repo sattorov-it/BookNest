@@ -1,0 +1,14 @@
+using Application.Responses;
+using Domain.Models;
+
+namespace Application.Interfeces;
+
+public interface IGenreService
+{
+    Task<ApiResponse<bool>> AddGenreAsync(Genre genre);
+    Task<ApiResponse<bool>> UpdateGenreAsync(Genre genre);
+    Task<ApiResponse<bool>> DeleteGenreAsync(int id);
+    Task<ApiResponse<Genre>> GetGenreAsync(int id);
+    Task<ApiResponse<List<Genre>>> GetGenresAsync();
+    Task<ApiResponse<int>> GetGenresAmountAsync();
+}

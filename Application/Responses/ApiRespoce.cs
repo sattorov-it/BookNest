@@ -14,7 +14,7 @@ public class ApiResponse<T>
         Message = message;
         Data = data;
     }
-    public ApiResponse(HttpStatusCode statusCode, string message)
+    public ApiResponse(HttpStatusCode statusCode, string message, Domain.Models.Genre res)
     {
         StatusCode = statusCode;
         Message = message;

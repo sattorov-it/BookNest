@@ -1,4 +1,5 @@
 using Application.Interfaces;
+using Application.Interfeces;
 using Application.Services;
 using Domain.Interfaces;
 using Infrastructure.Data;
@@ -17,6 +18,9 @@ builder.Services.AddScoped<IBookService, BookService>();
 
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
+
+builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+builder.Services.AddScoped<IGenreService,GenreService>();
 
 var app = builder.Build();
 
