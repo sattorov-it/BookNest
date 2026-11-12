@@ -48,3 +48,12 @@ C:\Users\Vali\Desktop\Ado.Net\day2Ado.Net\ConsoleApp\obj\Debug\net10.0\ref\Conso
 C:\Users\Vali\Desktop\Ado.Net\Lesson2Ado.Net\ConsoleApp\obj\Debug\net10.0\ConsoleApp.dll
 C:\Users\Vali\Desktop\Ado.Net\Lesson2Ado.Net\ConsoleApp\obj\Debug\net10.0\refint\ConsoleApp.dll
 C:\Users\Vali\Desktop\Ado.Net\Lesson2Ado.Net\ConsoleApp\obj\Debug\net10.0\ConsoleApp.pdb
+C:\Users\Vali\Desktop\PROJECT\BookNest.Net\ConsoleApp\obj\Debug\net10.0\ConsoleApp.csproj.AssemblyReference.cache
+C:\Users\Vali\Desktop\PROJECT\BookNest.Net\ConsoleApp\obj\Debug\net10.0\ConsoleApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Vali\Desktop\PROJECT\BookNest.Net\ConsoleApp\obj\Debug\net10.0\ConsoleApp.AssemblyInfoInputs.cache
+C:\Users\Vali\Desktop\PROJECT\BookNest.Net\ConsoleApp\obj\Debug\net10.0\ConsoleApp.AssemblyInfo.cs
+C:\Users\Vali\Desktop\PROJECT\BookNest.Net\ConsoleApp\obj\Debug\net10.0\ConsoleApp.csproj.CoreCompileInputs.cache
+C:\Users\Vali\Desktop\PROJECT\BookNest.Net\ConsoleApp\obj\Debug\net10.0\ConsoleApp.sourcelink.json
+C:\Users\Vali\Desktop\PROJECT\BookNest.Net\ConsoleApp\obj\Debug\net10.0\ConsoleApp.dll
+C:\Users\Vali\Desktop\PROJECT\BookNest.Net\ConsoleApp\obj\Debug\net10.0\refint\ConsoleApp.dll
+C:\Users\Vali\Desktop\PROJECT\BookNest.Net\ConsoleApp\obj\Debug\net10.0\ConsoleApp.pdb

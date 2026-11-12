@@ -1,4 +1,5 @@
 using System.Net;
+using Application.DTOs.Books;
 using Application.Interfaces;
 using Application.Responses;
 using Domain.Interfaces;
@@ -10,8 +11,16 @@ public class BookService(IBookRepository bookRepository) : IBookService
 {
     private IBookRepository repository = bookRepository;
 
-    public async Task<ApiResponse<bool>> AddBookAsync(Book book)
+    public async Task<ApiResponse<bool>> AddBookAsync(CreateBookDto dto)
     {
+        var book = new Book()
+        {
+            Title = dto.Title,
+            PublishedYear = dto.PublishedYear,
+            TotalCopies = dto.TotalCopies,
+            AuthorId = dto.AuthorId,
+            GenreId = dto.GenreId
+        };
         var res = await repository.AddBookAsync(book);
         return res == true
         ? new ApiResponse<bool>(HttpStatusCode.OK, "Added!", res)
@@ -26,20 +35,48 @@ public class BookService(IBookRepository bookRepository) : IBookService
         : new ApiResponse<bool>(HttpStatusCode.InternalServerError, "Not deleted.", res);
     }
 
-    public async Task<ApiResponse<Book>> GetBookAsync(int id)
+    public async Task<ApiResponse<GetBookDto>> GetBookAsync(int id)
     {
         var res = await repository.GetBookAsync(id);
-        return new ApiResponse<Book>(HttpStatusCode.OK, "Book with given id.", res);
+        return res != null
+        ? new ApiResponse<GetBookDto>(HttpStatusCode.OK, "Book with given id.", new GetBookDto()
+        {
+            Id = res.Id,
+            Title = res.Title,
+            PublishedYear = res.PublishedYear,
+            TotalCopies = res.TotalCopies,
+            AuthorId = res.AuthorId,
+            GenreId = res.GenreId
+        })
+        : new ApiResponse<GetBookDto>(HttpStatusCode.NotFound, "No book with given id.");
     }
 
-    public async Task<ApiResponse<List<Book>>> GetBooksAsync()
+    public async Task<ApiResponse<List<GetBookDto>>> GetBooksAsync()
     {
-        var res = await repository.GetBooksAsync();
-        return new ApiResponse<List<Book>>(HttpStatusCode.OK, "List of books.", res);
+        var books = await repository.GetBooksAsync();
+        var res = books.Select(v => new GetBookDto()
+        {
+            Id = v.Id,
+            Title = v.Title,
+            PublishedYear = v.PublishedYear,
+            TotalCopies = v.TotalCopies,
+            AuthorId = v.AuthorId,
+            GenreId = v.GenreId
+        }).ToList();
+        return new ApiResponse<List<GetBookDto>>(HttpStatusCode.OK, "List of books.", res);
     }
 
-    public async Task<ApiResponse<bool>> UpdateBookAsync(Book book)
+    public async Task<ApiResponse<bool>> UpdateBookAsync(UpdateBookDto dto)
     {
+        var book = new Book()
+        {
+            Id = dto.Id,
+            Title = dto.Title,
+            PublishedYear = dto.PublishedYear,
+            TotalCopies = dto.TotalCopies,
+            AuthorId = dto.AuthorId,
+            GenreId = dto.GenreId
+        };
         var res = await repository.UpdateBookAsync(book);
         return res == true
         ? new ApiResponse<bool>(HttpStatusCode.OK, "Updated!", res)
