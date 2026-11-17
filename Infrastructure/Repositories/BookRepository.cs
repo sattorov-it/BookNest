@@ -1,111 +1,84 @@
-using Dapper;
 using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
-public class BookRepository(AppDbContext appDbContext) : IBookRepository
+public class BookRepository(ApplicationDbContext appDbContext) : IBookRepository
 {
-    private AppDbContext context = appDbContext;
+    private readonly ApplicationDbContext _context = appDbContext;
+
     public async Task<bool> AddBookAsync(Book book)
     {
-        using var connection = context.Connection();
-        connection.Open();
-        var query = "insert into books (title, publishedyear, totalcopies, authorid, genreid) values (@title, @publishedyear, @totalcopies, @authorid, @genreid)";
-        var res = await connection.ExecuteAsync(query, book);
+        _context.Books.Add(book);
+        var res = await _context.SaveChangesAsync();
         return res > 0;
-
     }
 
     public async Task<bool> DeleteBookAsync(int id)
     {
-        using var connection = context.Connection();
-        connection.Open();
-        var query = "delete from books where id=@id";
-        var res = await connection.ExecuteAsync(query, new { id });
+        var book = await _context.Books.FirstOrDefaultAsync(x => x.Id == id);
+        if (book == null) return false;
+        _context.Books.Remove(book);
+        var res = await _context.SaveChangesAsync();
         return res > 0;
     }
 
     public async Task<bool> UpdateBookAsync(Book book)
     {
-        using var connection = context.Connection();
-        connection.Open();
-        var query = "update books set title=@title, publishedyear=@publishedyear, totalcopies=@totalcopies where id=@id";
-        var res = await connection.ExecuteAsync(query, book);
+        var b = await _context.Books.FirstOrDefaultAsync(x => x.Id == book.Id);
+        if (b == null) return false;
+        b.Title = book.Title;
+        b.PublishedYear = book.PublishedYear;
+        b.TotalCopies = book.TotalCopies;
+        var res = await _context.SaveChangesAsync();
         return res > 0;
     }
+
     public async Task<Book> GetBookAsync(int id)
     {
-        using var connection = context.Connection();
-        connection.Open();
-        var query = "select * from books where id=@id";
-        var book = await connection.QuerySingleAsync<Book>(query, new { id });
-        return book;
+        var book = await _context.Books.FirstOrDefaultAsync(x => x.Id == id);
+        return book!;
     }
 
     public async Task<List<Book>> GetBooksAsync()
     {
-        using var connection = context.Connection();
-        connection.Open();
-        var books = await connection.QueryAsync<Book>("select * from books");
-        return books.ToList();
+        return await _context.Books.ToListAsync();
     }
-
 
     public async Task<int> GetBookAmountAsync()
     {
-        using var connection = context.Connection();
-        connection.Open();
-        var query = "select count(*) from books";
-        return await connection.ExecuteScalarAsync<int>(query);
+        return await _context.Books.CountAsync();
     }
 
     public async Task<int> GetMinPublishedYearByAuthorAsync(int authorId)
     {
-        using var connection = context.Connection();
-        connection.Open();
-        var query = "select min(publishedyear) from books where authorid=@authorId";
-        return await connection.ExecuteScalarAsync<int>(query, new { authorId });
+        return await _context.Books.Where(x => x.AuthorId == authorId).MinAsync(x => (int?)x.PublishedYear) ?? 0;
     }
 
     public async Task<int> GetMaxPublishedYearByAuthorAsync(int authorId)
     {
-        using var connection = context.Connection();
-        connection.Open();
-        var query = "select max(publishedyear) from books where authorid=@authorId";
-        return await connection.ExecuteScalarAsync<int>(query, new { authorId });
+        return await _context.Books.Where(x => x.AuthorId == authorId).MaxAsync(x => (int?)x.PublishedYear) ?? 0;
     }
 
     public async Task<int> GetMinPublishedYearByGenreAsync(int genreId)
     {
-        using var connection = context.Connection();
-        connection.Open();
-        var query = "select min(publishedyear) from books where genreid=@genreId";
-        return await connection.ExecuteScalarAsync<int>(query, new { genreId });
+        return await _context.Books.Where(x => x.GenreId == genreId).MinAsync(x => (int?)x.PublishedYear) ?? 0;
     }
 
     public async Task<int> GetMaxPublishedYearByGenreAsync(int genreId)
     {
-        using var connection = context.Connection();
-        connection.Open();
-        var query = "select max(publishedyear) from books where genreid=@genreId";
-        return await connection.ExecuteScalarAsync<int>(query, new { genreId });
+        return await _context.Books.Where(x => x.GenreId == genreId).MaxAsync(x => (int?)x.PublishedYear) ?? 0;
     }
 
     public async Task<int> GetAmountByPublishedYearAsync(int year)
     {
-        using var connection = context.Connection();
-        connection.Open();
-        var query = "select count(*) from books where publishedyear=@year";
-        return await connection.ExecuteScalarAsync<int>(query, new { year });
+        return await _context.Books.CountAsync(x => x.PublishedYear == year);
     }
 
     public async Task<int> GetAmountByGenreAsync(int genreId)
     {
-        using var connection = context.Connection();
-        connection.Open();
-        var query = "select count(*) from books where genreid=@genreId";
-        return await connection.ExecuteScalarAsync<int>(query, new { genreId });
+        return await _context.Books.CountAsync(x => x.GenreId == genreId);
     }
 }

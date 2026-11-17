@@ -1,55 +1,52 @@
-using Dapper;
 using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
-public class GenreRepository(AppDbContext appDbContext) : IGenreRepository
+public class GenreRepository(ApplicationDbContext appDbContext) : IGenreRepository
 {
-    private AppDbContext context = appDbContext;
+    private readonly ApplicationDbContext _context = appDbContext;
+
     public async Task<bool> AddGenreAsync(Genre genre)
     {
-        var connection = context.Connection();
-        var query = "insert into genres (name) values (@name)";
-        var res = await connection.ExecuteAsync(query, genre);
+        _context.Genres.Add(genre);
+        var res = await _context.SaveChangesAsync();
         return res > 0;
     }
 
     public async Task<bool> DeleteGenreAsync(int id)
     {
-        var connection = context.Connection();
-        var query = "delete from genres where id=@id";
-        var res = await connection.ExecuteAsync(query, new { id });
+        var genre = await _context.Genres.FirstOrDefaultAsync(x => x.Id == id);
+        if (genre == null) return false;
+        _context.Genres.Remove(genre);
+        var res = await _context.SaveChangesAsync();
         return res > 0;
     }
 
     public async Task<bool> UpdateGenreAsync(Genre genre)
     {
-        var connection = context.Connection();
-        var query = "update genres set name = @name where id=@id";
-        var res = await connection.ExecuteAsync(query, genre);
+        var g = await _context.Genres.FirstOrDefaultAsync(x => x.Id == genre.Id);
+        if (g == null) return false;
+        g.Name = genre.Name;
+        var res = await _context.SaveChangesAsync();
         return res > 0;
     }
+
     public async Task<Genre> GetGenreAsync(int id)
     {
-        var connection = context.Connection();
-        var query = "select * from genres where id=@id";
-        var genre = await connection.QuerySingleAsync<Genre>(query, new { id });
-        return genre;
+        var genre = await _context.Genres.FirstOrDefaultAsync(x => x.Id == id);
+        return genre!;
     }
 
     public async Task<List<Genre>> GetGenresAsync()
     {
-        var connection = context.Connection();
-        var query = "select * from genres";
-        return (await connection.QueryAsync<Genre>(query)).ToList();
+        return await _context.Genres.ToListAsync();
     }
 
     public async Task<int> GetGenresAmountAsync()
     {
-        var connection = context.Connection();
-        var query = "select count(*) from genres";
-        return await connection.ExecuteScalarAsync<int>(query);
+        return await _context.Genres.CountAsync();
     }
 }

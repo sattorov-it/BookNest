@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Application.Interfaces;
 using Application.Interfeces;
 using Application.Services;
@@ -14,7 +15,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<AppDbContext>();
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBookService, BookService>();
