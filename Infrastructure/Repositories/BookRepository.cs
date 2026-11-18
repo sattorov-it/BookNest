@@ -19,8 +19,10 @@ public class BookRepository(ApplicationDbContext appDbContext) : IBookRepository
     public async Task<bool> DeleteBookAsync(int id)
     {
         var book = await _context.Books.FirstOrDefaultAsync(x => x.Id == id);
-        if (book == null) return false;
-        _context.Books.Remove(book);
+        if (book != null)
+        {
+            _context.Books.Remove(book);
+        }
         var res = await _context.SaveChangesAsync();
         return res > 0;
     }
@@ -28,10 +30,12 @@ public class BookRepository(ApplicationDbContext appDbContext) : IBookRepository
     public async Task<bool> UpdateBookAsync(Book book)
     {
         var b = await _context.Books.FirstOrDefaultAsync(x => x.Id == book.Id);
-        if (b == null) return false;
-        b.Title = book.Title;
-        b.PublishedYear = book.PublishedYear;
-        b.TotalCopies = book.TotalCopies;
+        if (b != null)
+        {
+            b.Title = book.Title;
+            b.PublishedYear = book.PublishedYear;
+            b.TotalCopies = book.TotalCopies;
+        }
         var res = await _context.SaveChangesAsync();
         return res > 0;
     }
@@ -39,7 +43,7 @@ public class BookRepository(ApplicationDbContext appDbContext) : IBookRepository
     public async Task<Book> GetBookAsync(int id)
     {
         var book = await _context.Books.FirstOrDefaultAsync(x => x.Id == id);
-        return book!;
+        return book ?? new();
     }
 
     public async Task<List<Book>> GetBooksAsync()

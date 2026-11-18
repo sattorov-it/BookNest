@@ -19,8 +19,10 @@ public class GenreRepository(ApplicationDbContext appDbContext) : IGenreReposito
     public async Task<bool> DeleteGenreAsync(int id)
     {
         var genre = await _context.Genres.FirstOrDefaultAsync(x => x.Id == id);
-        if (genre == null) return false;
-        _context.Genres.Remove(genre);
+        if (genre != null)
+        {
+            _context.Genres.Remove(genre);
+        }
         var res = await _context.SaveChangesAsync();
         return res > 0;
     }
@@ -28,8 +30,10 @@ public class GenreRepository(ApplicationDbContext appDbContext) : IGenreReposito
     public async Task<bool> UpdateGenreAsync(Genre genre)
     {
         var g = await _context.Genres.FirstOrDefaultAsync(x => x.Id == genre.Id);
-        if (g == null) return false;
-        g.Name = genre.Name;
+        if (g != null)
+        {
+            g.Name = genre.Name;
+        }
         var res = await _context.SaveChangesAsync();
         return res > 0;
     }
@@ -37,7 +41,7 @@ public class GenreRepository(ApplicationDbContext appDbContext) : IGenreReposito
     public async Task<Genre> GetGenreAsync(int id)
     {
         var genre = await _context.Genres.FirstOrDefaultAsync(x => x.Id == id);
-        return genre!;
+        return genre ?? new();
     }
 
     public async Task<List<Genre>> GetGenresAsync()

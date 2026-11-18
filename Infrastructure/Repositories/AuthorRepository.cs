@@ -19,8 +19,10 @@ public class AuthorRepository(ApplicationDbContext appDbContext) : IAuthorReposi
     public async Task<bool> DeleteAuthorAsync(int id)
     {
         var author = await _context.Authors.FirstOrDefaultAsync(x => x.Id == id);
-        if (author == null) return false;
-        _context.Authors.Remove(author);
+        if (author != null)
+        {
+            _context.Authors.Remove(author);
+        }
         var res = await _context.SaveChangesAsync();
         return res > 0;
     }
@@ -28,10 +30,12 @@ public class AuthorRepository(ApplicationDbContext appDbContext) : IAuthorReposi
     public async Task<bool> UpdateAuthorAsync(Author author)
     {
         var a = await _context.Authors.FirstOrDefaultAsync(x => x.Id == author.Id);
-        if (a == null) return false;
-        a.Fullname = author.Fullname;
-        a.Country = author.Country;
-        a.BirthYear = author.BirthYear;
+        if (a != null)
+        {
+            a.Fullname = author.Fullname;
+            a.Country = author.Country;
+            a.BirthYear = author.BirthYear;
+        }
         var res = await _context.SaveChangesAsync();
         return res > 0;
     }
@@ -39,7 +43,7 @@ public class AuthorRepository(ApplicationDbContext appDbContext) : IAuthorReposi
     public async Task<Author> GetAuthorAsync(int id)
     {
         var author = await _context.Authors.FirstOrDefaultAsync(x => x.Id == id);
-        return author!;
+        return author ?? new();
     }
 
     public async Task<List<Author>> GetAuthorsAsync()
